@@ -14,9 +14,21 @@ app.get('/', (request, response) => {
   response.send('I love CodersX');
 });
 
+var todos = ['Đi chợ', 'Nấu cơm', 'Rửa bát', 'Học code tại CodersX'];
+
 app.get('/todos', (req, res) => {
   res.render('index', {
-    todos: ['Đi chợ', 'Nấu cơm', 'Rửa bát', 'Học code tại CodersX']
+    todos: todos
+  });
+});
+
+app.get('/todos/search', (req, res) => {
+  var q = req.query.q;
+  var matchedTodos = todos.filter(function(item) {
+    return item.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+  });
+  res.render('index', {
+    todos: matchedTodos
   });
 });
 

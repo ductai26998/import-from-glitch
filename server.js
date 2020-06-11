@@ -6,15 +6,22 @@
 const express = require('express');
 const app = express();
 
+
 app.set('view engine', 'pug');
 app.set('views', './views');
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 // https://expressjs.com/en/starter/basic-routing.html
 app.get('/', (request, response) => {
   response.send('I love CodersX');
 });
 
-var todos = ['Đi chợ', 'Nấu cơm', 'Rửa bát', 'Học code tại CodersX'];
+var todos = [
+  {todo:'Đi chợ'}, 
+  {todo:'Nấu cơm'}, 
+  {todo:'Rửa bát'}, 
+  {todo: 'Học code tại CodersX'}];
 
 app.get('/todos', (req, res) => {
   res.render('index', {
@@ -25,11 +32,20 @@ app.get('/todos', (req, res) => {
 app.get('/todos/search', (req, res) => {
   var q = req.query.q;
   var matchedTodos = todos.filter(function(item) {
-    return item.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+    return item.todo.toLowerCase().indexOf(q.todo.toLowerCase()) !== -1;
   });
   res.render('index', {
     todos: matchedTodos
   });
+});
+
+app.get('/todos/create', (req, res) => {
+  res.render('create');
+});
+
+app.post('/todos/create', (req, res) => {
+  todos.push(req.body);
+  res.redirect('/todos');
 });
 
 // listen for requests :)
